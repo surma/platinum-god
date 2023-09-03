@@ -1,3 +1,5 @@
+import { show } from "/components/dialog/";
+
 import classes from "./style.module.css";
 import sprites from "/assets/spriteloader.js";
 
@@ -8,6 +10,17 @@ export default function ItemGrid({ items }) {
 				<Item item={item} />
 			))}
 		</div>
+	);
+}
+
+function ItemDescription({ item }) {
+	return (
+		<>
+			<h1>{item.itemName}</h1>
+			{item.description.split("\n").map((l) => (
+				<p>{l}</p>
+			))}
+		</>
 	);
 }
 
@@ -22,6 +35,7 @@ function Item({ item }) {
 				--icon-width: ${item.icon.width}px;
 				--icon-height: ${item.icon.height}px;
 			`}
+			onClick={() => show(<ItemDescription item={item} />)}
 		></div>
 	);
 }
