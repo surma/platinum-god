@@ -11,7 +11,11 @@ export default function Filter({ items, setItems }) {
 					const filters = ev.target.value.split(" ");
 					setItems(
 						items.filter((item) =>
-							filters.some((filter) => item.description.includes(filter)),
+							filters.some(
+								(filter) =>
+									item.description.includes(filter) ||
+									item.tags.includes(filter),
+							),
 						),
 					);
 				},

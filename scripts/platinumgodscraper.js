@@ -16,6 +16,7 @@ const parsedItems = await page.evaluate(async () => {
 			.filter((p) => p.classList.length == 0)
 			.map((p) => p.textContent)
 			.join("\n");
+		const tags = item.querySelector(".tags").textContent;
 		const text = item.textContent;
 		const cs = window.getComputedStyle(item.querySelector(":scope .item"));
 		const image = cs.backgroundImage.slice(5, -2);
@@ -28,6 +29,7 @@ const parsedItems = await page.evaluate(async () => {
 			itemId,
 			itemName,
 			description,
+			tags,
 			icon: {
 				image,
 				offset,
