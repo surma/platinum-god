@@ -22,6 +22,8 @@ const parsedItems = await page.evaluate(async () => {
 		const offset = cs.backgroundPosition
 			.split(" ")
 			.map((v) => parseInt(v.slice(0, -2), 10));
+		const width = cs.width.slice(0, -2);
+		const height = cs.height.slice(0, -2);
 		return {
 			itemId,
 			itemName,
@@ -29,6 +31,8 @@ const parsedItems = await page.evaluate(async () => {
 			icon: {
 				image,
 				offset,
+				width,
+				height,
 			},
 		};
 	});
