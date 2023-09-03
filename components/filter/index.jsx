@@ -10,13 +10,16 @@ export default function Filter({ items, setItems }) {
 				async write(ev) {
 					const filters = ev.target.value
 						.split(" ")
-						.filter((v) => v.trim().length > 0);
+						.filter((v) => v.trim().length > 0)
+						.map((v) => v.toLowerCase());
+					if (filters.length <= 0) return setItems(items);
 					setItems(
 						items.filter((item) =>
 							filters.some(
 								(filter) =>
-									item.description.includes(filter) ||
-									item.tags.includes(filter),
+									item.description.toLowerCase().includes(filter) ||
+									item.tags.toLowerCase().includes(filter) ||
+									item.itemName.toLowerCase().includes(filter),
 							),
 						),
 					);
