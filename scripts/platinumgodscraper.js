@@ -40,18 +40,41 @@ console.log("Saving items...");
 const itemsFile = new URL("../assets/items.json", import.meta.url).pathname;
 await fs.writeFile(itemsFile, JSON.stringify(parsedItems, null, "  "));
 console.log("Downloading sprite maps...");
+const bgImages = [...new Set(parsedItems.map((i) => i.icon.image))];
 const spritemaps = await Promise.all(
-	[...new Set(parsedItems.map((i) => i.icon.image))].map(async (url) => {
+	bgImages.map(async (url) => {
 		const imageUrl = new URL(url, baseUrl);
 		const filename = imageUrl.pathname.split("/").at(-1);
 		return {
+			url,
 			filename,
 			data: await fetch(imageUrl).then((r) => r.arrayBuffer()),
 		};
 	}),
 );
 console.log("Saving spritemaps...");
-for (const { filename, data } of spritemaps) {
-	const spriteFile = new URL("../assets/", import.meta.url).pathname + filename;
-	await fs.writeFile(spriteFile, new Uint8Array(data));
-}
+const loaderProps = await Promise.all(
+	spritemaps.map(async ({ url, filename, data }) => {
+		const spriteFile =
+			new URL("../assets/", import.meta.url).pathname + filename;
+		await fs.writeFile(spriteFile, new Uint8Array(data));
+		const id = filename.replace(/[^a-z0-9]/gi, "_");
+		return {
+			filename,
+			id,
+			url,
+			imp: `import ${id} from '/assets/${filename}';`,
+		};
+	}),
+);
+console.log("Saving spritemap loader...");
+const loader = `
+	${loaderProps.map(({ imp }) => imp).join("\n")}
+	export default {
+		${loaderProps.map(({ id, url }) => `${JSON.stringify(url)}: ${id}`).join(",\n")}
+	}
+
+`;
+const spriteLoaderFile =
+	new URL("../assets/", import.meta.url).pathname + "spriteloader.js";
+await fs.writeFile(spriteLoaderFile, loader);

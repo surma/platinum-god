@@ -8,9 +8,8 @@
 	"author": "Surma <surma@surma.dev>",
 	"license": "Apache-2.0",
 	"devDependencies": {
-		"jsdom": "^22.1.0",
-		"parse5": "^7.1.2",
 		"playwright": "^1.37.1",
+		"preact": "^10.17.1",
 		"prettier": "^3.0.3",
 		"vite": "^4.4.9"
 	}

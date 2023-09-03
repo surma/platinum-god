@@ -1,0 +1,12 @@
+.grid {
+	--item-size: 50px;
+	display: grid;
+	grid-template-columns: repeat(8, 1fr);
+}
+
+.item {
+	background-image: var(--bgimg);
+	background-position: calc(var(--bg-x) * 1px) calc(var(--bg-y) * 1px);
+	width: var(--item-size);
+	height: var(--item-size);
+}
