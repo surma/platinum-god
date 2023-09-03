@@ -3,13 +3,18 @@
 	"type": "module",
 	"scripts": {
 		"fmt": "prettier --write .",
-		"dev": "vite ."
+		"dev": "vite .",
+		"build:static": "vite build",
+		"build:ssg-gen": "vite build --ssr server-main.jsx --outDir dist/ssg",
+		"build:ssg": "node dist/ssg/server-main.js",
+		"build": "npm run build:static"
 	},
 	"author": "Surma <surma@surma.dev>",
 	"license": "Apache-2.0",
 	"devDependencies": {
 		"playwright": "^1.37.1",
 		"preact": "^10.17.1",
+		"preact-render-to-string": "^6.2.1",
 		"prettier": "^3.0.3",
 		"vite": "^4.4.9"
 	}
