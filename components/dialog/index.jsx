@@ -22,7 +22,7 @@ export default function Dialog() {
 	[content, setContent] = useState(null);
 
 	return (
-		<dialog ref={ref} className={classes.dialog}>
+		<dialog ref={ref} className={classes.dialog} onClick={onClick}>
 			<button onClick={() => hide()} className={classes.close}>
 				x
 			</button>
@@ -35,11 +35,9 @@ export function show(children) {
 	if (!ref.current) return;
 	setContent(children);
 	ref.current.showModal();
-	requestAnimationFrame(() => document.addEventListener("click", onClick));
 }
 
 export function hide() {
 	if (!ref.current) return;
 	ref.current.close();
-	document.removeEventListener("click", onClick);
 }
