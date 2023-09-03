@@ -1,4 +1,5 @@
 .filter {
+	height: 80px;
 	display: flex;
 	flex-direction: row;
 	justify-content: stretch;

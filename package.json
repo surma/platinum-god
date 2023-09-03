@@ -4,10 +4,10 @@
 	"scripts": {
 		"fmt": "prettier --write .",
 		"dev": "vite .",
-		"build:static": "vite build",
+		"build:static": "vite build --ssr-manifest",
 		"build:ssg-gen": "vite build --ssr server-main.jsx --outDir dist/ssg",
 		"build:ssg": "node dist/ssg/server-main.js",
-		"build": "npm run build:static"
+		"build": "npm run build:static && npm run build:ssg-gen && npm run build:ssg"
 	},
 	"author": "Surma <surma@surma.dev>",
 	"license": "Apache-2.0",

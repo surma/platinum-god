@@ -1,4 +1,5 @@
 import { useCallback, useMemo } from "preact/hooks";
+import { isSSR } from "/static-remix";
 
 import classes from "./style.module.css";
 
@@ -35,8 +36,12 @@ export default function Filter({ items, setItems }) {
 	}, []);
 	return (
 		<fieldset className={classes.filter}>
-			<legend>Search</legend>
-			<input type="search" onInput={onInput} className={classes.input} />
+			{!isSSR() && (
+				<>
+					<legend>Search</legend>
+					<input type="search" onInput={onInput} className={classes.input} />
+				</>
+			)}
 		</fieldset>
 	);
 }

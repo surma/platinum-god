@@ -28,6 +28,7 @@ export function getAllAvailableRoutes() {
 			const matcher = { exec: (p) => p.pathname === pattern };
 
 			const route = {
+				path,
 				matcher,
 				isStatic,
 				pattern,

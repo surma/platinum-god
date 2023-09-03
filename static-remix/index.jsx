@@ -10,6 +10,7 @@ import {
 
 export * from "./routing.jsx";
 export * from "./outlet.jsx";
+export * from "./utils.jsx";
 
 export default function NotQuiteRemixApp({ initial }) {
 	const [View, setView] = useState(() => initial?.View);
@@ -27,10 +28,8 @@ export default function NotQuiteRemixApp({ initial }) {
 	useEffect(() => activateRoute(routeForPath()), []);
 
 	return (
-		<HeadRoot>
-			<RouteData.Provider value={{ loaderData, routeParams }}>
-				<View />
-			</RouteData.Provider>
-		</HeadRoot>
+		<RouteData.Provider value={{ loaderData, routeParams }}>
+			<View />
+		</RouteData.Provider>
 	);
 }

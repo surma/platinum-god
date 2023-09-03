@@ -1,6 +1,5 @@
 import { useState } from "preact/hooks";
 
-import { Head } from "/static-remix";
 import ItemGrid from "/components/item-grid/";
 import Dialog from "/components/dialog/";
 import Filter from "/components/filter/";
