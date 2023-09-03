@@ -8,7 +8,9 @@ export default function Filter({ items, setItems }) {
 		readable.pipeTo(
 			new WritableStream({
 				async write(ev) {
-					const filters = ev.target.value.split(" ");
+					const filters = ev.target.value
+						.split(" ")
+						.filter((v) => v.trim().length > 0);
 					setItems(
 						items.filter((item) =>
 							filters.some(

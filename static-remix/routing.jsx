@@ -25,9 +25,7 @@ export function getAllAvailableRoutes() {
 			pattern = pattern.replace(/\..+$/g, ".html");
 			const isStatic = !pattern.includes("$");
 
-			const matcher = isSSR()
-				? { exec: (p) => p === pattern }
-				: new URLPattern(pattern.replace("$", ":"), DUMMY_DOMAIN);
+			const matcher = { exec: (p) => p.pathname === pattern };
 
 			const route = {
 				matcher,
@@ -123,7 +121,7 @@ export function useBrowserRouting(activateRoute) {
 		});
 	}
 	useEffect(() => {
-		navigation.addEventListener("navigate", onNavigate);
-		return () => navigation.removeEventListener("navigate", onNavigate);
+		// navigation.addEventListener("navigate", onNavigate);
+		// return () => navigation.removeEventListener("navigate", onNavigate);
 	}, []);
 }
