@@ -109,19 +109,32 @@ export async function loadRoute(route) {
 export function useBrowserRouting(activateRoute) {
 	if (isSSR()) return;
 
-	async function onNavigate(ev) {
-		if (!ev.canIntercept) return;
-		const currentUrl = new URL(location.toString());
-		const destinationUrl = new URL(ev.destination.url);
-		if (currentUrl.origin != destinationUrl.origin) return;
-		const route = routeForPath(destinationUrl.pathname);
-		if (!route) throw Error(`No route matched ${destinationUrl.pathname}`);
-		ev.intercept({
-			handler: async () => activateRoute(route),
-		});
-	}
 	useEffect(() => {
-		// navigation.addEventListener("navigate", onNavigate);
-		// return () => navigation.removeEventListener("navigate", onNavigate);
+		async function navigate(url, { push = true } = {}) {
+			const route = routeForPath(url.pathname);
+			if (push) history.pushState({}, null, url);
+			await activateRoute(route);
+		}
+
+		async function onClick(ev) {
+			if (ev.target.localName != "a") return;
+			const current = new URL(location.toString());
+			const target = new URL(ev.target.href);
+			if (current.origin !== target.origin) return;
+			ev.preventDefault();
+			await navigate(target);
+		}
+
+		async function onPopState(ev) {
+			const current = new URL(location.toString());
+			await navigate(current, { push: false });
+		}
+
+		document.addEventListener("click", onClick);
+		window.addEventListener("popstate", onPopState);
+		return () => {
+			document.removeEventListener("click", onClick);
+			window.removeEventListener("popstate", onPopState);
+		};
 	}, []);
 }

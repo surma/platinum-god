@@ -11,6 +11,7 @@ export default function Index() {
 	const [filteredItems, setFilteredItems] = useState(items);
 	return (
 		<>
+			<a href="about.html">About</a>
 			<Dialog />
 			<Filter items={items} setItems={setFilteredItems} />
 			<ItemGrid items={filteredItems} />

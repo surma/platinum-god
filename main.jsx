@@ -1,4 +1,4 @@
-import { hydrate } from "preact";
+import { render } from "preact";
 import Root from "/static-remix";
 
-hydrate(<Root />, document.body);
+render(<Root />, document.body);
