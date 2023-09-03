@@ -1,0 +1,12 @@
+.filter {
+	display: flex;
+	flex-direction: row;
+	justify-content: stretch;
+	padding: 0;
+}
+
+.input {
+	font-size: 28px;
+	flex-grow: 1;
+	border: 0;
+}

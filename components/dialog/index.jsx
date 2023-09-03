@@ -17,7 +17,7 @@ function onClick(ev) {
 
 let ref;
 let content, setContent;
-export function Dialog() {
+export default function Dialog() {
 	ref = useRef(null);
 	[content, setContent] = useState(null);
 
