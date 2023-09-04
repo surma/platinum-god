@@ -3,6 +3,11 @@ import { useContext, useEffect, useState } from "preact/hooks";
 import { isSSR } from "./utils.jsx";
 import { OutletContext } from "./outlet.jsx";
 
+let URLPattern = globalThis.URLPattern;
+if (!URLPattern) {
+	URLPattern = (await import("urlpattern-polyfill")).URLPattern;
+}
+
 export const RouteData = createContext(null);
 
 export function useLoaderData() {
@@ -25,7 +30,9 @@ export function getAllAvailableRoutes() {
 			pattern = pattern.replace(/\..+$/g, ".html");
 			const isStatic = !pattern.includes("$");
 
-			const matcher = { exec: (p) => p.pathname === pattern };
+			const matcher = isSSR()
+				? { exec: (p) => p.pathname === pattern }
+				: new URLPattern(pattern.replace("$", ":"), DUMMY_DOMAIN);
 
 			const route = {
 				path,
@@ -64,6 +71,7 @@ export function getAllAvailableRoutes() {
 }
 
 export const availableRoutes = getAllAvailableRoutes();
+globalThis._availableRoutes = availableRoutes;
 
 export function routeForPath(path) {
 	if (!path && !isSSR()) path = new URL(location.toString()).pathname;
@@ -90,11 +98,11 @@ export async function loadRawRoute(route) {
 	}
 	let View = viewModule.default;
 	const loaderData = await viewModule.loader?.();
-	return { View, loaderData };
+	return { View, loaderData, viewModule };
 }
 
 export async function loadRoute(route) {
-	let { View, loaderData } = await loadRawRoute(route);
+	let { View, loaderData, viewModule } = await loadRawRoute(route);
 	for (const parentRoute of route.parentRoutes) {
 		const { View: ParentView } = await loadRawRoute(parentRoute);
 		const ViewCopy = View;
@@ -104,7 +112,7 @@ export async function loadRoute(route) {
 			</OutletContext.Provider>
 		);
 	}
-	return { View, loaderData };
+	return { View, loaderData, routeParams: route.groups, viewModule, route };
 }
 
 export function useBrowserRouting(activateRoute) {
@@ -118,9 +126,10 @@ export function useBrowserRouting(activateRoute) {
 		}
 
 		async function onClick(ev) {
-			if (ev.target.localName != "a") return;
+			const link = ev.target.closest("a");
+			if (!link) return;
 			const current = new URL(location.toString());
-			const target = new URL(ev.target.href);
+			const target = new URL(link.href);
 			if (current.origin !== target.origin) return;
 			ev.preventDefault();
 			await navigate(target);

@@ -25,20 +25,23 @@ const parsedItems = await page.evaluate(async () => {
 			.map((v) => parseInt(v.slice(0, -2), 10));
 		const width = cs.width.slice(0, -2);
 		const height = cs.height.slice(0, -2);
-		return {
+		return [
 			itemId,
-			itemName,
-			description,
-			tags,
-			icon: {
-				image,
-				offset,
-				width,
-				height,
+			{
+				id: itemId,
+				name: itemName,
+				description,
+				tags,
+				icon: {
+					image,
+					offset,
+					width,
+					height,
+				},
 			},
-		};
+		];
 	});
-	return parsedItems;
+	return Object.fromEntries(parsedItems);
 });
 await page.close();
 await browser.close();
@@ -46,7 +49,9 @@ console.log("Saving items...");
 const itemsFile = new URL("../assets/items.json", import.meta.url).pathname;
 await fs.writeFile(itemsFile, JSON.stringify(parsedItems, null, "  "));
 console.log("Downloading sprite maps...");
-const bgImages = [...new Set(parsedItems.map((i) => i.icon.image))];
+const bgImages = [
+	...new Set(Object.values(parsedItems).map((i) => i.icon.image)),
+];
 const spritemaps = await Promise.all(
 	bgImages.map(async (url) => {
 		const imageUrl = new URL(url, baseUrl);

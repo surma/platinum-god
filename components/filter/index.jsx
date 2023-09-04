@@ -13,17 +13,18 @@ export default function Filter({ items, setItems }) {
 						.split(" ")
 						.filter((v) => v.trim().length > 0)
 						.map((v) => v.toLowerCase());
-					if (filters.length <= 0) return setItems(items);
-					setItems(
-						items.filter((item) =>
+					let result = Object.values(items);
+					if (filters.length > 0) {
+						result = result.filter((item) =>
 							filters.some(
 								(filter) =>
 									item.description.toLowerCase().includes(filter) ||
 									item.tags.toLowerCase().includes(filter) ||
-									item.itemName.toLowerCase().includes(filter),
+									item.name.toLowerCase().includes(filter),
 							),
-						),
-					);
+						);
+					}
+					setItems(result);
 				},
 			}),
 		);

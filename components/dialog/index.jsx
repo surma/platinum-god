@@ -1,43 +1,49 @@
 import { useCallback, useEffect, useRef, useState } from "preact/hooks";
+import { isSSR } from "/static-remix";
 
 import classes from "./style.module.css";
 
 function onClick(ev) {
-	if (!ref.current) return;
-	if (!ref.current.open) return;
-	const bb = ref.current.getBoundingClientRect();
+	const dialog = ev.target.closest("dialog");
+	if (!dialog) return;
+	if (!dialog.open) return;
+	const bb = dialog.getBoundingClientRect();
 	if (
 		ev.layerX < 0 ||
 		ev.layerY < 0 ||
 		ev.layerX > bb.width ||
 		ev.layerY > bb.height
 	)
-		hide();
+		dialog.close();
 }
 
-let ref;
-let content, setContent;
-export default function Dialog() {
-	ref = useRef(null);
-	[content, setContent] = useState(null);
+function show(ref) {
+	if (!ref) return;
+	if (ref?.open) return;
+	ref?.showModal();
+}
 
+function hide(ev) {
+	ev.target.closest("dialog")?.close();
+}
+
+function onClose(ev) {
+	history.back();
+}
+
+export default function Dialog({ children }) {
 	return (
-		<dialog ref={ref} className={classes.dialog} onClick={onClick}>
-			<button onClick={() => hide()} className={classes.close}>
+		<dialog
+			ref={show}
+			className={classes.dialog}
+			onClick={onClick}
+			onClose={onClose}
+			open={isSSR()}
+		>
+			<button onClick={hide} className={classes.close}>
 				x
 			</button>
-			{content}
+			{children}
 		</dialog>
 	);
-}
-
-export function show(children) {
-	if (!ref.current) return;
-	setContent(children);
-	ref.current.showModal();
-}
-
-export function hide() {
-	if (!ref.current) return;
-	ref.current.close();
 }

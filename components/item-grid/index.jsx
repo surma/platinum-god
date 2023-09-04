@@ -1,4 +1,4 @@
-import { show } from "/components/dialog/";
+import ItemIcon from "/components/item-icon/";
 
 import classes from "./style.module.css";
 import sprites from "/assets/spriteloader.js";
@@ -13,29 +13,10 @@ export default function ItemGrid({ items }) {
 	);
 }
 
-function ItemDescription({ item }) {
-	return (
-		<>
-			<h1>{item.itemName}</h1>
-			{item.description.split("\n").map((l) => (
-				<p>{l}</p>
-			))}
-		</>
-	);
-}
-
 function Item({ item }) {
 	return (
-		<div
-			className={classes.item}
-			style={`
-				--bgimg: url(${sprites[item.icon.image]});
-				--bg-x: ${item.icon.offset[0]}px; 
-			  --bg-y: ${item.icon.offset[1]}px;
-				--icon-width: ${item.icon.width}px;
-				--icon-height: ${item.icon.height}px;
-			`}
-			onClick={() => show(<ItemDescription item={item} />)}
-		></div>
+		<a href={`/item/${item.id}.html`} className={classes.item}>
+			<ItemIcon item={item} />
+		</a>
 	);
 }
