@@ -18,14 +18,18 @@ export default function NotQuiteRemixApp({ initial }) {
 	const [routeParams, setRouteParams] = useState(initial?.routeParams);
 
 	async function activateRoute(route) {
-		const { View, loaderData } = await loadRoute(route);
+		const { View, loaderData, routeParams } = await loadRoute(route);
+
 		setRouteParams(route.groups);
 		setLoaderData(loaderData);
+		setRouteParams(routeParams);
 		setView(() => View);
 	}
 
 	useBrowserRouting(activateRoute);
-	useEffect(() => activateRoute(routeForPath()), []);
+	useEffect(() => {
+		activateRoute(routeForPath());
+	}, []);
 
 	return (
 		<HeadRoot>

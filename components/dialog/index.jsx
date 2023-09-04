@@ -14,17 +14,23 @@ function onClick(ev) {
 		ev.layerX > bb.width ||
 		ev.layerY > bb.height
 	)
-		dialog.close();
+		hide();
 }
 
-function show(ref) {
-	if (!ref) return;
-	if (ref?.open) return;
-	ref?.showModal();
+let ref;
+function show() {
+	const d = ref.current;
+	if (!d) return;
+	if (d.hasAttribute("open")) {
+		d.removeAttribute("open");
+		d.close();
+	}
+	if (d.open === true) return;
+	ref.current?.showModal();
 }
 
-function hide(ev) {
-	ev.target.closest("dialog")?.close();
+function hide() {
+	ref.current?.close();
 }
 
 function onClose(ev) {
@@ -32,9 +38,13 @@ function onClose(ev) {
 }
 
 export default function Dialog({ children }) {
+	ref = useRef(null);
+	useEffect(() => {
+		show();
+	}, []);
 	return (
 		<dialog
-			ref={show}
+			ref={ref}
 			className={classes.dialog}
 			onClick={onClick}
 			onClose={onClose}

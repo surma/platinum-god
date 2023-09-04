@@ -8,4 +8,5 @@
 
 .dialog {
 	width: 80vw;
+	z-index: 99;
 }

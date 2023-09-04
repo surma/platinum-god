@@ -7,7 +7,7 @@ export default function ItemGrid({ items }) {
 	return (
 		<div className={classes.grid}>
 			{items.map((item) => (
-				<Item item={item} />
+				<Item key={item.id} item={item} />
 			))}
 		</div>
 	);
