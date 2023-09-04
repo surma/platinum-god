@@ -11,21 +11,10 @@ export default function ItemGrid({ items }) {
 	);
 }
 
-function ItemDescription({ item }) {
-	return (
-		<>
-			<h1>{item.itemName}</h1>
-			{item.description.split("\n").map((l) => (
-				<p>{l}</p>
-			))}
-		</>
-	);
-}
-
 function Item({ item }) {
 	return (
 		<a
-			href={`/item/${item.itemId}.html`}
+			href={`/item/${item.id}.html`}
 			className={classes.item}
 			style={`
 				--bgimg: url(${sprites[item.icon.image]});
