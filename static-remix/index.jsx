@@ -28,8 +28,10 @@ export default function NotQuiteRemixApp({ initial }) {
 	useEffect(() => activateRoute(routeForPath()), []);
 
 	return (
-		<RouteData.Provider value={{ loaderData, routeParams }}>
-			<View />
-		</RouteData.Provider>
+		<HeadRoot>
+			<RouteData.Provider value={{ loaderData, routeParams }}>
+				<View />
+			</RouteData.Provider>
+		</HeadRoot>
 	);
 }

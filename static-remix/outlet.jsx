@@ -31,19 +31,19 @@ export function HeadRoot({ children }) {
 	}
 
 	if (!isSSR()) {
-		// useLayoutEffect(() => {
-		// 	let headElem = [...document.head.childNodes].find(
-		// 		(n) => n.nodeType === 8 && n.data === headOutletMarker,
-		// 	);
-		// 	if (!headElem) {
-		// 		headElem = document.createComment(headOutletMarker);
-		// 		document.head.append(headElem);
-		// 	}
-		// 	while (headElem.nextSibling) headElem.nextSibling.remove();
-		// 	const c = document.createElement("div");
-		// 	render(<>{headChildren}</>, c);
-		// 	headElem.after(...c.childNodes);
-		// }, [headChildren]);
+		useLayoutEffect(() => {
+			let headElem = [...document.head.childNodes].find(
+				(n) => n.nodeType === 8 && n.data === headOutletMarker,
+			);
+			if (!headElem) {
+				headElem = document.createComment(headOutletMarker);
+				document.head.prepend(headElem);
+			}
+			while (headElem.previousSibling) headElem.previousSibling.remove();
+			const c = document.createElement("div");
+			render(<>{headChildren}</>, c);
+			headElem.before(...c.childNodes);
+		}, [headChildren]);
 	}
 
 	return (
