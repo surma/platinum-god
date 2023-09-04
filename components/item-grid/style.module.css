@@ -7,9 +7,4 @@
 }
 
 .item {
-	background-image: var(--bgimg);
-	background-position: var(--bg-x) var(--bg-y);
-	width: var(--icon-width);
-	height: var(--icon-height);
-	aspect-ratio: 1;
 }

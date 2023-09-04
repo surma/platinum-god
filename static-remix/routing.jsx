@@ -126,9 +126,10 @@ export function useBrowserRouting(activateRoute) {
 		}
 
 		async function onClick(ev) {
-			if (ev.target.localName != "a") return;
+			const link = ev.target.closest("a");
+			if (!link) return;
 			const current = new URL(location.toString());
-			const target = new URL(ev.target.href);
+			const target = new URL(link.href);
 			if (current.origin !== target.origin) return;
 			ev.preventDefault();
 			await navigate(target);
