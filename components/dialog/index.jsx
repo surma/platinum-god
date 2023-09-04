@@ -18,6 +18,8 @@ function onClick(ev) {
 }
 
 function show(ref) {
+	if (!ref) return;
+	if (ref?.open) return;
 	ref?.showModal();
 }
 

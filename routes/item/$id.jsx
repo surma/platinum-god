@@ -6,7 +6,7 @@ import Dialog from "/components/dialog/";
 
 import items from "/assets/items.json";
 
-export const staticRouteParams = [{ id: 3 }];
+export const staticRouteParams = Object.keys(items).map((id) => ({ id }));
 
 function ItemDescription({ id }) {
 	const item = items[id];
