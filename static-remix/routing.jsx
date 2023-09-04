@@ -3,6 +3,11 @@ import { useContext, useEffect, useState } from "preact/hooks";
 import { isSSR } from "./utils.jsx";
 import { OutletContext } from "./outlet.jsx";
 
+let URLPattern = globalThis.URLPattern;
+if (!URLPattern) {
+	URLPattern = (await import("urlpattern-polyfill")).URLPattern;
+}
+
 export const RouteData = createContext(null);
 
 export function useLoaderData() {
@@ -25,7 +30,9 @@ export function getAllAvailableRoutes() {
 			pattern = pattern.replace(/\..+$/g, ".html");
 			const isStatic = !pattern.includes("$");
 
-			const matcher = { exec: (p) => p.pathname === pattern };
+			const matcher = isSSR()
+				? { exec: (p) => p.pathname === pattern }
+				: new URLPattern(pattern.replace("$", ":"), DUMMY_DOMAIN);
 
 			const route = {
 				path,

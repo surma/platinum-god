@@ -1,5 +1,3 @@
-import { show } from "/components/dialog/";
-
 import classes from "./style.module.css";
 import sprites from "/assets/spriteloader.js";
 
@@ -26,7 +24,8 @@ function ItemDescription({ item }) {
 
 function Item({ item }) {
 	return (
-		<div
+		<a
+			href={`/item/${item.itemId}.html`}
 			className={classes.item}
 			style={`
 				--bgimg: url(${sprites[item.icon.image]});
@@ -35,7 +34,6 @@ function Item({ item }) {
 				--icon-width: ${item.icon.width}px;
 				--icon-height: ${item.icon.height}px;
 			`}
-			onClick={() => show(<ItemDescription item={item} />)}
-		></div>
+		></a>
 	);
 }
