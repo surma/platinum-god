@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "preact/hooks";
+import { isSSR } from "/static-remix";
 
 import classes from "./style.module.css";
 
@@ -35,6 +36,7 @@ export default function Dialog({ children }) {
 			className={classes.dialog}
 			onClick={onClick}
 			onClose={onClose}
+			open={isSSR()}
 		>
 			<button onClick={hide} className={classes.close}>
 				x

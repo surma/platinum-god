@@ -1,4 +1,5 @@
 import { promises as fs } from "node:fs";
+import * as path from "node:path";
 import { render } from "preact-render-to-string";
 
 import Root, {
@@ -18,22 +19,33 @@ async function main() {
 	const template = await fs.readFile(templatePath, "utf8");
 
 	for (const route of availableRoutes.values()) {
-		if (!route.isStatic) continue;
-		if (route.pattern.endsWith("_index.html")) continue;
 		const cssDeps = (manifest[route.path.slice(1)] ?? []).filter((p) =>
 			p.endsWith(".css"),
 		);
 		const cssLoader = cssDeps
 			.map((p) => `<link rel="stylesheet" href="${p}" />`)
 			.join("\n");
-		const outFile = new URL(`dist/${route.pattern}`, root).pathname;
-		console.log(`Rendering ${outFile}`);
-		const { View, loaderData } = await loadRoute(route);
-		const result = render(<Root initial={{ View, loaderData }} />);
-		await fs.writeFile(
-			outFile,
-			template + cssLoader + render(<>{headChildren}</>) + result,
-		);
+		const { View, loaderData, viewModule } = await loadRoute(route);
+
+		const staticRouteParams = viewModule.staticRouteParams ?? [{}];
+		if (!route.isStatic && staticRouteParams.length <= 0) continue;
+
+		for (const routeParams of staticRouteParams) {
+			let outFilePath = route.pattern;
+			for (const [key, value] of Object.entries(routeParams)) {
+				outFilePath = outFilePath.replace(`$${key}`, value);
+			}
+			const outFile = new URL(`dist/${outFilePath}`, root).pathname;
+			console.log(`Rendering ${outFilePath}`);
+			const result = render(
+				<Root initial={{ View, loaderData, routeParams }} />,
+			);
+			await fs.mkdir(path.dirname(outFile), { recursive: true });
+			await fs.writeFile(
+				outFile,
+				template + cssLoader + render(<>{headChildren}</>) + result,
+			);
+		}
 	}
 }
 

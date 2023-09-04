@@ -71,6 +71,7 @@ export function getAllAvailableRoutes() {
 }
 
 export const availableRoutes = getAllAvailableRoutes();
+globalThis._availableRoutes = availableRoutes;
 
 export function routeForPath(path) {
 	if (!path && !isSSR()) path = new URL(location.toString()).pathname;
@@ -97,11 +98,11 @@ export async function loadRawRoute(route) {
 	}
 	let View = viewModule.default;
 	const loaderData = await viewModule.loader?.();
-	return { View, loaderData };
+	return { View, loaderData, viewModule };
 }
 
 export async function loadRoute(route) {
-	let { View, loaderData } = await loadRawRoute(route);
+	let { View, loaderData, viewModule } = await loadRawRoute(route);
 	for (const parentRoute of route.parentRoutes) {
 		const { View: ParentView } = await loadRawRoute(parentRoute);
 		const ViewCopy = View;
@@ -111,7 +112,7 @@ export async function loadRoute(route) {
 			</OutletContext.Provider>
 		);
 	}
-	return { View, loaderData };
+	return { View, loaderData, routeParams: route.groups, viewModule, route };
 }
 
 export function useBrowserRouting(activateRoute) {

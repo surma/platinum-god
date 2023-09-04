@@ -17,9 +17,9 @@ export default function Root() {
 				<meta name="viewport" content="initial-scale=1, width=device-width" />
 			</Head>
 			<a href="about.html">About</a>
+			<Outlet />
 			<Filter items={items} setItems={setFilteredItems} />
 			<ItemGrid items={filteredItems} />
-			<Outlet />
 		</>
 	);
 }
