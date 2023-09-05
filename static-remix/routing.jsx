@@ -62,9 +62,9 @@ export function getAllAvailableRoutes() {
 		route.parentRoutes = loadParentsForRoute(route);
 	}
 
-	for (const route of routes.values()) {
-		if (route.pattern.endsWith("_index.html")) {
-			routes.delete(route.pattern);
+	for (const pattern of routes.keys()) {
+		if (pattern.endsWith("_index.html")) {
+			routes.delete(pattern);
 		}
 	}
 	return routes;
@@ -84,35 +84,48 @@ export function routeForPath(path) {
 		if (!match) continue;
 
 		return {
-			...route,
-			groups: match.pathname?.groups,
+			route,
+			routeParams: match.pathname?.groups,
 		};
 	}
 }
 
 export async function loadRawRoute(route) {
-	const viewModule = await route.factory();
-	if (!viewModule?.default) {
-		console.error(`Route ${route.pattern} does not have a default export`);
-		return { View: () => <h1>Error</h1> };
+	try {
+		if (!route.viewModule) route.viewModule = await route.factory();
+		if (!route.viewModule?.default) {
+			throw error(`Route ${route.pattern} does not have a default export`);
+		}
+		let View = route.viewModule.default;
+		const loaderData = await route.viewModule.loader?.();
+		return { View, loaderData };
+	} catch (e) {
+		return { View: () => <h1>Error: {e.message}</h1> };
 	}
-	let View = viewModule.default;
-	const loaderData = await viewModule.loader?.();
-	return { View, loaderData, viewModule };
 }
 
 export async function loadRoute(route) {
-	let { View, loaderData, viewModule } = await loadRawRoute(route);
-	for (const parentRoute of route.parentRoutes) {
-		const { View: ParentView } = await loadRawRoute(parentRoute);
-		const ViewCopy = View;
-		View = () => (
-			<OutletContext.Provider value={<ViewCopy />}>
-				<ParentView />
+	let { View, loaderData } = await loadRawRoute(route);
+	const parentViews = await Promise.all(
+		route.parentRoutes.map((route) => loadRawRoute(route)),
+	);
+
+	function render(i = 0) {
+		if (!parentViews[i]) return <View />;
+		const PView = parentViews[i].View;
+		return (
+			<OutletContext.Provider value={render(i + 1)}>
+				<PView />
 			</OutletContext.Provider>
 		);
 	}
-	return { View, loaderData, routeParams: route.groups, viewModule, route };
+
+	return {
+		View: route.computedView,
+		loaderData,
+		route,
+		render,
+	};
 }
 
 export function useBrowserRouting(activateRoute) {
