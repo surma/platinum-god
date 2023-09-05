@@ -8,13 +8,16 @@ import Filter from "/components/filter/";
 import items from "/assets/items.json";
 
 export default function Root() {
+	this.componentWillUnmount = () => console.log("_index unmount");
 	const [filteredItems, setFilteredItems] = useState(Object.values(items));
 	return (
 		<>
-			<Head>
-				<title>Ugly Platinum God</title>
-				<meta name="viewport" content="initial-scale=1, width=device-width" />
-			</Head>
+			{null && (
+				<Head>
+					<title>Ugly Platinum God</title>
+					<meta name="viewport" content="initial-scale=1, width=device-width" />
+				</Head>
+			)}
 			<a href="about.html">About</a>
 			<Filter items={items} setItems={setFilteredItems} />
 			<Outlet />

@@ -1,8 +1,8 @@
-import { hydrate } from "preact";
-import Root, { loadRoute, routeForPath } from "/static-remix";
+import { hydrate } from "/static-remix";
 
-async function main() {
-	const { View, loaderData, routeParams } = await loadRoute(routeForPath());
-	hydrate(<Root initial={{ View, loaderData, routeParams }} />, document.body);
+import "preact/devtools";
+if (import.meta.env.DEV) {
+	await import("preact/debug");
 }
-main();
+
+hydrate(document.body);

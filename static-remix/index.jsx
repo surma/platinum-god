@@ -1,4 +1,4 @@
-import { createContext } from "preact";
+import { createContext, hydrate as preactHydrate } from "preact";
 import { useEffect, useState } from "preact/hooks";
 import { HeadRoot } from "./outlet.jsx";
 import {
@@ -12,15 +12,18 @@ export * from "./routing.jsx";
 export * from "./outlet.jsx";
 export * from "./utils.jsx";
 
-export default function NotQuiteRemixApp({ initial }) {
+globalThis._lastView = null;
+export default function StaticRemixApp({ initial }) {
 	const [View, setView] = useState(() => initial?.View);
 	const [loaderData, setLoaderData] = useState(initial?.loaderData);
 	const [routeParams, setRouteParams] = useState(initial?.routeParams);
 
-	async function activateRoute(route) {
-		const { View, loaderData, routeParams } = await loadRoute(route);
+	console.log("StaticRemix rerender", _lastView === View);
+	_lastView = View;
+	async function activateRoute({ route, routeParams }) {
+		console.log(route);
+		const { View, loaderData } = await loadRoute(route);
 
-		setRouteParams(route.groups);
 		setLoaderData(loaderData);
 		setRouteParams(routeParams);
 		setView(() => View);
@@ -32,10 +35,24 @@ export default function NotQuiteRemixApp({ initial }) {
 	}, []);
 
 	return (
-		<HeadRoot>
-			<RouteData.Provider value={{ loaderData, routeParams }}>
-				<View />
-			</RouteData.Provider>
-		</HeadRoot>
+		<RouteData.Provider value={{ loaderData, routeParams }}>
+			{View()}
+		</RouteData.Provider>
+	);
+	// return (
+	// 	<HeadRoot>
+	// 		<RouteData.Provider value={{ loaderData, routeParams }}>
+	// 			<View />
+	// 		</RouteData.Provider>
+	// 	</HeadRoot>
+	// );
+}
+
+export async function hydrate(node) {
+	const { route, routeParams } = routeForPath();
+	const { View, loaderData } = await loadRoute(route);
+	preactHydrate(
+		<StaticRemixApp initial={{ View, loaderData, routeParams }} />,
+		node,
 	);
 }

@@ -25,7 +25,7 @@ async function main() {
 		const cssLoader = cssDeps
 			.map((p) => `<link rel="stylesheet" href="${p}" />`)
 			.join("\n");
-		const { View, loaderData, viewModule } = await loadRoute(route);
+		const { View, loaderData, viewModule } = await loadRoute({ route });
 
 		const staticRouteParams = viewModule.staticRouteParams ?? [{}];
 		if (!route.isStatic && staticRouteParams.length <= 0) continue;
