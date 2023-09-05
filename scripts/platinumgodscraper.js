@@ -10,8 +10,9 @@ console.log("Scraping...");
 const parsedItems = await page.evaluate(async () => {
 	const items = [...document.querySelectorAll("li.textbox")];
 	const parsedItems = items.map((item) => {
-		const itemId = parseInt(item.dataset.sid, 10);
 		const itemName = item.querySelector(".item-title").textContent;
+		// There’s card IDs, trinked IDs, item IDs, so ID alone isn’t unique. In fact, there are some items without an ID (like Gold Key).
+		const itemId = itemName.toLowerCase().replace(/[^a-z0-9]/g, "_");
 		const description = [...item.querySelectorAll("p")]
 			.filter((p) => p.classList.length == 0)
 			.map((p) => p.textContent)
