@@ -41,9 +41,9 @@ export default function StaticRemixApp({ initial }) {
 
 export async function hydrate(node) {
 	const { route, routeParams } = routeForPath();
-	const { View, loaderData } = await loadRoute(route);
+	const { render, loaderData } = await loadRoute(route);
 	preactHydrate(
-		<StaticRemixApp initial={{ View, loaderData, routeParams }} />,
+		<StaticRemixApp initial={{ render, loaderData, routeParams }} />,
 		node,
 	);
 }
