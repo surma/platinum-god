@@ -25,9 +25,9 @@ async function main() {
 		const cssLoader = cssDeps
 			.map((p) => `<link rel="stylesheet" href="${p}" />`)
 			.join("\n");
-		const { View, loaderData, viewModule } = await loadRoute({ route });
+		const { render: routeRender, loaderData } = await loadRoute(route);
 
-		const staticRouteParams = viewModule.staticRouteParams ?? [{}];
+		const staticRouteParams = route.viewModule.staticRouteParams ?? [{}];
 		if (!route.isStatic && staticRouteParams.length <= 0) continue;
 
 		for (const routeParams of staticRouteParams) {
@@ -38,7 +38,7 @@ async function main() {
 			const outFile = new URL(`dist/${outFilePath}`, root).pathname;
 			console.log(`Rendering ${outFilePath}`);
 			const result = render(
-				<Root initial={{ View, loaderData, routeParams }} />,
+				<Root initial={{ render: routeRender, loaderData, routeParams }} />,
 			);
 			await fs.mkdir(path.dirname(outFile), { recursive: true });
 			await fs.writeFile(

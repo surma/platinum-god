@@ -13,7 +13,7 @@ export * from "./outlet.jsx";
 export * from "./utils.jsx";
 
 export default function StaticRemixApp({ initial }) {
-	const [render, setRender] = useState(() => initial?.View ?? (() => {}));
+	const [render, setRender] = useState(() => initial?.render ?? (() => {}));
 	const [loaderData, setLoaderData] = useState(initial?.loaderData);
 	const [routeParams, setRouteParams] = useState(initial?.routeParams);
 
@@ -41,9 +41,9 @@ export default function StaticRemixApp({ initial }) {
 
 export async function hydrate(node) {
 	const { route, routeParams } = routeForPath();
-	const { View, loaderData } = await loadRoute(route);
+	const { render, loaderData } = await loadRoute(route);
 	preactHydrate(
-		<StaticRemixApp initial={{ View, loaderData, routeParams }} />,
+		<StaticRemixApp initial={{ render, loaderData, routeParams }} />,
 		node,
 	);
 }
