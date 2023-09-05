@@ -13,7 +13,7 @@ export * from "./outlet.jsx";
 export * from "./utils.jsx";
 
 export default function StaticRemixApp({ initial }) {
-	const [render, setRender] = useState(() => initial?.View ?? (() => {}));
+	const [render, setRender] = useState(() => initial?.render ?? (() => {}));
 	const [loaderData, setLoaderData] = useState(initial?.loaderData);
 	const [routeParams, setRouteParams] = useState(initial?.routeParams);
 
