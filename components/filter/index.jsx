@@ -16,7 +16,7 @@ export default function Filter({ items, setItems }) {
 					let result = Object.values(items);
 					if (filters.length > 0) {
 						result = result.filter((item) =>
-							filters.some(
+							filters.every(
 								(filter) =>
 									item.description.toLowerCase().includes(filter) ||
 									item.tags.toLowerCase().includes(filter) ||
